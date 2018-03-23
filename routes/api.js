@@ -59,11 +59,13 @@ router.post('/getImageByKey',(req,res)=>{
 
 //Get Saved Images
 router.post('/getSavedImages',(req,res)=>{
+    
     imageDB.GetImagebyKey(req.body.keyword,(err,result)=>{
         if (err)
         throw err;
         else{
             fs.readdir("./public/"+imagePathFolder+"/"+req.body.keyword+"/", (err, files) => {
+                
                 if(err){
                     console.log(err)
                     res.json({
@@ -71,7 +73,9 @@ router.post('/getSavedImages',(req,res)=>{
                     })
                 }
                 else{
+                   
                     var top15=files.slice(0, 15).map(i =>i)
+                    console.log(top15)
                     res.json({
                         Keys:result.keys,
                         imagepath:imagePathFolder+"/"+req.body.keyword+"/",

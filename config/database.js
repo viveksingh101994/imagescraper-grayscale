@@ -1,4 +1,4 @@
 module.exports={
-    connectionstring:"mongodb://localhost:27017/imagescraping",
-    secretKey:"!@#$%"
+    connectionstring:"mongodb://imgscrap:images@ds121289.mlab.com:21289/imagescraper",
+    secretKey:"!@#$%",
 }

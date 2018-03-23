@@ -407,7 +407,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/searchresult/searchresult.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\n<div class=\"row\">\n    <div *ngFor=\"let item of images\" class=\"col s5\">\n      <div class=\"card\">\n        <div class=\"card-image\">\n          <img [src]=\"item\">\n        </div>\n      </div>\n    </div>\n</div>"
+module.exports = "\n<div class=\"row\">\n    <div *ngFor=\"let item of images\" class=\"col s5\">\n      <div class=\"card\">\n        <div class=\"card-image\">\n          <img [src]=\"item\">\n        </div>\n      </div>\n    </div>\n</div>\n\n<div class=\"row\" *ngIf=\"errormessage!=''\">\n  <div class=\"center-align\" style=\"color:red\">{{errormessage}}</div>\n</div>"
 
 /***/ }),
 
@@ -456,10 +456,13 @@ var SearchresultComponent = (function () {
             return false;
         }
         this.Api.getPastKeywordImage(this.item).subscribe(function (items) {
-            if (items.message != '') {
+            if (items.message == '') {
                 _this.key = items.Keys;
                 _this.imagepath = items.imagepath;
                 _this.images = items.images.map(function (x) { return '/' + items.imagepath + x; });
+            }
+            else {
+                _this.errormessage = _this.item;
             }
         });
     };
