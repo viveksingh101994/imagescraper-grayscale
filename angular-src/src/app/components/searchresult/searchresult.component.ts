@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./searchresult.component.css']
 })
 export class SearchresultComponent implements OnInit {
-
+  public errormessage: string;
   public item: any;
   public searchitems;
   public key: string;
@@ -18,16 +18,15 @@ export class SearchresultComponent implements OnInit {
 
   ngOnInit() {
 
-    this.checkitem();
-
     this.Api.currentitem.subscribe(item => {
       this.item = item;
     });
-
+    this.checkitem();
     this.GetImage();
   }
 
   public checkitem() {
+    console.log(this.item)
     if (this.item == undefined) {
       this.router.navigate(['/']);
     }
@@ -38,9 +37,13 @@ export class SearchresultComponent implements OnInit {
       return false;
     }
     this.Api.getPastKeywordImage(this.item).subscribe(items => {
-      this.key = items.Keys;
-      this.imagepath = items.imagepath;
-      this.images = items.images.map(x => '/' + items.imagepath + x);
+      if (items.message == '') {
+        this.key = items.Keys;
+        this.imagepath = items.imagepath;
+        this.images = items.images.map(x => '/' + items.imagepath + x);
+      } else {
+        this.errormessage = this.item;
+      }
     });
   }
 

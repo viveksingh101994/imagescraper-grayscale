@@ -11,6 +11,9 @@
             <a class="waves-effect pink darken-4 btn" (click)="Search($event)">Search</a>
         </div>
     </div>
+    <div class="row" *ngIf="errormessage!=''">
+        <div class="center-align" style="color:red">{{errormessage}}</div>
+    </div>
 </form>
 
 
