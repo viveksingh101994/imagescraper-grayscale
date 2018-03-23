@@ -260,7 +260,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"isLoader\" class=\"progress\">\n    <div class=\"indeterminate\"></div>\n</div>\n\n<form class=\"col s12\">\n    <div class=\"row\">\n       <div class=\"input-field col s10\">\n          <input id=\"last_name\" [(ngModel)]='searchimg' name='searchimg' type=\"text\" placeholder=\"Search Image\">\n        </div>\n        <div class=\"col s2\" style=\"margin-top: 22px;\">\n            <a class=\"waves-effect pink darken-4 btn\" (click)=\"Search($event)\">Search</a>\n        </div>\n    </div>\n</form>\n\n\n\n<div class=\"row\">\n    <div *ngFor=\"let img of images\" class=\"col s5\">\n      <div class=\"card\">\n        <div class=\"card-image\">\n          <img [src]=\"img\"/>\n        </div>\n      </div>\n    </div>\n</div>"
+module.exports = "<div *ngIf=\"isLoader\" class=\"progress\">\n    <div class=\"indeterminate\"></div>\n</div>\n\n<form class=\"col s12\">\n    <div class=\"row\">\n       <div class=\"input-field col s10\">\n          <input id=\"last_name\" [(ngModel)]='searchimg' name='searchimg' type=\"text\" placeholder=\"Search Image\">\n        </div>\n        <div class=\"col s2\" style=\"margin-top: 22px;\">\n            <a class=\"waves-effect pink darken-4 btn\" (click)=\"Search($event)\">Search</a>\n        </div>\n    </div>\n    <div class=\"row\" *ngIf=\"errormessage!=''\">\n        <div class=\"center-align\" style=\"color:red\">{{errormessage}}</div>\n    </div>\n</form>\n\n\n\n<div class=\"row\">\n    <div *ngFor=\"let img of images\" class=\"col s5\">\n      <div class=\"card\">\n        <div class=\"card-image\">\n          <img [src]=\"img\"/>\n        </div>\n      </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -291,16 +291,22 @@ var HomeComponent = (function () {
     };
     HomeComponent.prototype.Search = function (e) {
         var _this = this;
+        this.errormessage = '';
         if (this.searchimg == '') {
             return false;
         }
         this.isLoader = true;
         this.Api.SaveSearchResult(this.searchimg).subscribe(function (res) {
-            _this.key = res.Images;
-            _this.imagepath = res.imagepath;
-            _this.images = res.Keys.map(function (x) { return res.imagepath + x; });
-            _this.searchimg = '';
             _this.isLoader = false;
+            if (res.message == "") {
+                _this.key = res.Images;
+                _this.imagepath = res.imagepath;
+                _this.images = res.Keys.map(function (x) { return res.imagepath + x; });
+                _this.searchimg = '';
+            }
+            else {
+                _this.errormessage = res.message;
+            }
         });
     };
     return HomeComponent;
@@ -432,10 +438,10 @@ var SearchresultComponent = (function () {
     }
     SearchresultComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.checkitem();
         this.Api.currentitem.subscribe(function (item) {
             _this.item = item;
         });
+        this.checkitem();
         this.GetImage();
     };
     SearchresultComponent.prototype.checkitem = function () {
@@ -450,9 +456,11 @@ var SearchresultComponent = (function () {
             return false;
         }
         this.Api.getPastKeywordImage(this.item).subscribe(function (items) {
-            _this.key = items.Keys;
-            _this.imagepath = items.imagepath;
-            _this.images = items.images.map(function (x) { return '/' + items.imagepath + x; });
+            if (items.message != '') {
+                _this.key = items.Keys;
+                _this.imagepath = items.imagepath;
+                _this.images = items.images.map(function (x) { return '/' + items.imagepath + x; });
+            }
         });
     };
     return SearchresultComponent;

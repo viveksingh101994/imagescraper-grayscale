@@ -36,7 +36,7 @@ app.use(bodyparser.json());
 app.use('/api',api);
 
 //Port Number
-const port=3000||process.env.PORTgit;
+const port=process.env.PORT||3000;
 
 //Server Listening Point
 app.listen(port,()=>{

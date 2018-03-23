@@ -21,9 +21,10 @@ router.get('/getAll',(req,res)=>{
 router.post('/getImageByKey',(req,res)=>{
    imageScrape.GetImageFromGoogle(req.body.keyword)
    .then(images=>{
-      let url=images.map(item=>item.url);                       //Getting Url Of images
-      return imageScrape.GrayScaleImage(url,req.body.keyword)  //Converting Images to Grayscale
-    }).then((imagePath)=>{
+        let url=images.map(item=>item.thumb_url);                       //Getting Url Of images
+        return imageScrape.GrayScaleImage(url,req.body.keyword)  //Converting Images to Grayscale
+    })
+    .then((imagePath)=>{
         let image=new imageDB({
             keys:req.body.keyword,
             imagepath:imagePath
@@ -36,16 +37,24 @@ router.post('/getImageByKey',(req,res)=>{
             console.log("done")
         })
         fs.readdir("./public/"+imagePathFolder+"/"+req.body.keyword+"/", (err, files) => {
-            var obj={
-                Images:req.body.keyword,
-                Keys:files,
-                imagepath:imagePathFolder+"/"+req.body.keyword+"/",
+            if(err){
+                res.json({
+                    message:"Server Error"
+                })
+            } else
+            {
+                var top15=files.slice(0, 15).map(i =>i);
+                var obj={
+                    Images:req.body.keyword,
+                    Keys:files,
+                    imagepath:imagePathFolder+"/"+req.body.keyword+"/",
+                    message:""
+                }
+                res.json(obj);
             }
-            console.log(obj)
-            
-            res.json(obj);
+           
         })
-    });
+    }).catch(err=>{throw err;});
 })
 
 //Get Saved Images
@@ -55,12 +64,22 @@ router.post('/getSavedImages',(req,res)=>{
         throw err;
         else{
             fs.readdir("./public/"+imagePathFolder+"/"+req.body.keyword+"/", (err, files) => {
-
-                res.json({
-                    Keys:result.keys,
-                    imagepath:imagePathFolder+"/"+req.body.keyword+"/",
-                    images:files,
-                })
+                if(err){
+                    console.log(err)
+                    res.json({
+                        message:"Server Error"
+                    })
+                }
+                else{
+                    var top15=files.slice(0, 15).map(i =>i)
+                    res.json({
+                        Keys:result.keys,
+                        imagepath:imagePathFolder+"/"+req.body.keyword+"/",
+                        images:top15,
+                        message:""
+                    })
+                }
+                
             })
         }
     })
