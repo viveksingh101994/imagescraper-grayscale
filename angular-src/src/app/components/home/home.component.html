@@ -1,0 +1,26 @@
+<div *ngIf="isLoader" class="progress">
+    <div class="indeterminate"></div>
+</div>
+
+<form class="col s12">
+    <div class="row">
+       <div class="input-field col s10">
+          <input id="last_name" [(ngModel)]='searchimg' name='searchimg' type="text" placeholder="Search Image">
+        </div>
+        <div class="col s2" style="margin-top: 22px;">
+            <a class="waves-effect pink darken-4 btn" (click)="Search($event)">Search</a>
+        </div>
+    </div>
+</form>
+
+
+
+<div class="row">
+    <div *ngFor="let img of images" class="col s5">
+      <div class="card">
+        <div class="card-image">
+          <img [src]="img"/>
+        </div>
+      </div>
+    </div>
+</div>

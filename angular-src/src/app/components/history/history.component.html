@@ -1,0 +1,8 @@
+<div class="row">
+  <span *ngFor="let item of items">
+    <div (click)="GetSelectedItem(item)" class="section z-depth-2" style="cursor:pointer">
+      <h5 class="center">{{item}}</h5>
+    </div>
+    <div class="divider"></div>
+  </span>
+</div>
